@@ -6,14 +6,14 @@ unsigned 8 bit number while detecting overflow on overflow pin.
 
 */
 `default_nettype none
-`include "defines/ECPU_def.v"
 
 module ALUAdd8(a, b, out, overflow);
 
 	input [7:0] a, b;
 	output [7:0] out;
 	output overflow;
-	wire c [8:0];
+	/* verilator lint_off UNOPTFLAT */
+	wire [8:0] c;
 	
 	assign c[0] = 1'd0;
 	

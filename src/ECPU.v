@@ -6,7 +6,9 @@ module ECPU(switch1, led1, led2);
 	input switch1;
 	output led1, led2;
 	
+	/* verilator lint_off UNUSED */
 	wire [7:0] result1;
+	/* verilator lint_off UNUSED */
 	wire [15:0] dummy;
 	wire carry;
 	reg [7:0] param1, param2;
@@ -29,8 +31,8 @@ module ECPU(switch1, led1, led2);
 				param1 = 8'd150;
 				param2 = 8'd150;
 			end
-		param3 = 8'd65532;
-		param4 = 8'd65532;
+		param3 = 16'd65532;
+		param4 = 16'd65532;
 		//param4[7:0] = result1;
 		//param4[8] = carry;
 		//param[15:9] = 7'd0;

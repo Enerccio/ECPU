@@ -6,14 +6,14 @@ unsigned 16 bit number while detecting overflow on overflow pin.
 
 */
 `default_nettype none
-`include "defines/ECPU_def.v"
 
 module ALUAdd16(a, b, out, overflow);
 
 	input [15:0] a, b;
 	output [15:0] out;
 	output overflow;
-	wire c [16:0];
+	/* verilator lint_off UNOPTFLAT */
+	wire [16:0] c;
 	
 	assign c[0] = 1'd0;
 	
