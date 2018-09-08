@@ -22,8 +22,8 @@ module ALU(operation, a_low, a_high, b_low, b_high, res_low, res_high,
 	wire [15:0] res_add;
 	wire res_eq;
 	reg [15:0] mux_zero = 16'd0;
-	reg [15:0] mux_add;
-	reg [15:0] mux_eq;
+	wire [15:0] mux_add;
+	wire [15:0] mux_eq;
 	
 	assign a[7:0] = a_low;
 	assign a[15:8] = a_high;
