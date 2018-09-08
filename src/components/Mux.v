@@ -15,7 +15,7 @@ module Mux(data_in, key, pass, data_out);
 	
 	reg [DATA_BUS_SIZE-1:0] sel_data;
 	
-	Equals #(KEY_SIZE) eq(key, MULTIPLEX_CODE, cmp_result);
+	Equals #(.BUS_SIZE(KEY_SIZE)) eq(key, MULTIPLEX_CODE, cmp_result);
 	
 	always @(*)
 	begin

@@ -7,38 +7,46 @@ Algorithmic logical unit
 `default_nettype none
 `include "../defines/ECPU_def.v"
 
-module ALU(operation, a_low, a_high, b_low, b_high, res_low, res_high, 
-	zerof, overf);
-
+module ALU(operation, a, b, res, carry_in, flags);
+	parameter integer BUS_SIZE = 16;
+	
 	input [7:0] operation;
-	input [7:0] a_low, a_high;
-	input [7:0] b_low, b_high;
-	output [7:0] res_low, res_high;
-	output zerof, overf;
+	input [BUS_SIZE-1:0] a;
+	input [BUS_SIZE-1:0] b;
+	input carry_in;
+	output [BUS_SIZE-1:0] res;
+	output [`ALU_FLAG_COUNT-1:0] flags;
 	
-	wire [15:0] a, b, res;
-	wire [15:0] res_add;
-	wire [15:0] res_eq;
+	wire [BUS_SIZE-1:0] res_add;
+	wire [`ALU_FLAG_OP_COUNT-1:0] res_add_f;
+	wire [BUS_SIZE-1:0] res_eq;
 	
-	reg [15:0] mux_zero = 16'd0;
-	wire [15:0] mux_add;
-	wire [15:0] mux_eq;
+	reg [BUS_SIZE-1:0] mux_zero = 0;
+	wire [BUS_SIZE-1:0] mux_add;
+	wire [BUS_SIZE-1:0] mux_eq;
+	reg [`ALU_FLAG_OP_COUNT-1:0] flag_zero = 0;
+	wire [`ALU_FLAG_OP_COUNT-1:0] flag_add;
+	wire [`ALU_FLAG_OP_COUNT-1:0] flag_res;	
 	
-	assign a[7:0] = a_low;
-	assign a[15:8] = a_high;
-	assign b[7:0] = b_low;
-	assign b[15:8] = b_high;
+	wire zerocmp;
 	
-	// TODO: mux for flags as well
+	// ADD - no carry 
+	Adder #(.BUS_SIZE(BUS_SIZE)) 
+		adder (a, b,res_add, 0, res_add_f[`ALU_FLAG_OVERFLOW]);
+	Mux #(.DATA_BUS_SIZE(BUS_SIZE), .MULTIPLEX_CODE(`ALU_ADD)) 
+		adder_mux(res_add, operation, mux_zero, mux_add);
+	Mux #(.DATA_BUS_SIZE(`ALU_FLAG_OP_COUNT), .MULTIPLEX_CODE(`ALU_ADD)) 
+		adder_mux_f(res_add_f, operation, flag_zero, flag_res);
 	
-	Adder adder (a, b, res_add, overf);
-	Mux #(16, 8, `ALU_ADD) adder_mux(res_add, operation, mux_zero, mux_add);
-	Equals #(16, 16) eq(a, b, res_eq);
-	Mux #(16, 8, `ALU_EQ) eq_mux(res_eq, operation, mux_add, res);
+	// EQ
+	Equals #(.BUS_SIZE(BUS_SIZE), .RESULT_SIZE(BUS_SIZE)) eq(a, b, res_eq);
+	Mux #(.DATA_BUS_SIZE(BUS_SIZE), .MULTIPLEX_CODE(`ALU_EQ)) 
+		eq_mux(res_eq, operation, mux_add, res);
 	
-	assign res_low = res[7:0];
-	assign res_high = res[15:8];
+	// ZEROCHECK
+	Equals #(.BUS_SIZE(BUS_SIZE)) 
+		zeroCheck (mux_zero, res, flags[`ALU_FLAG_ZERO]);
 	
-	assign zerof = 0;
+	assign flags[`ALU_FLAG_OP_COUNT-1:0] = flag_res;
 	
 endmodule 

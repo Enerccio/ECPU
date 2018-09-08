@@ -7,24 +7,26 @@ unsigned 16 bit number while detecting overflow on overflow pin.
 */
 `default_nettype none
 
-module Adder(a, b, out, overflow);
+module Adder(a, b, out, c_in, overflow);
+	parameter integer BUS_SIZE = 16;
 
-	input [15:0] a, b;
-	output [15:0] out;
+	input [BUS_SIZE-1:0] a, b;
+	input c_in;
+	output [BUS_SIZE-1:0] out;
 	output overflow;
 	/* verilator lint_off UNOPTFLAT */
-	wire [16:0] c;
+	wire [BUS_SIZE:0] c;
 	
-	assign c[0] = 1'd0;
+	assign c[0] = c_in;
 	
 	genvar i;
 	generate 
-		for (i=0; i<16; i = i + 1)
+		for (i=0; i<BUS_SIZE; i = i + 1)
 		begin: adder_block
 			FullAdder add(a[i], b[i], c[i], out[i], c[i+1]);
 		end
 	endgenerate
 	
-	assign overflow = c[16];
+	assign overflow = c[BUS_SIZE];
 		
 endmodule 
