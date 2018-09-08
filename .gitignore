@@ -12,6 +12,7 @@ simulation
 testbench
 timing
 .qsys_edit
+src/obj_dir
 
 # ignore Quartus II generated files
 *_generation_script*
