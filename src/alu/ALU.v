@@ -16,11 +16,10 @@ module ALU(operation, a_low, a_high, b_low, b_high, res_low, res_high,
 	output [7:0] res_low, res_high;
 	output zerof, overf;
 	
-	reg [14:0] eq_zeropad = 15'd0;
-	
 	wire [15:0] a, b, res;
 	wire [15:0] res_add;
-	wire res_eq;
+	wire [15:0] res_eq;
+	
 	reg [15:0] mux_zero = 16'd0;
 	wire [15:0] mux_add;
 	wire [15:0] mux_eq;
@@ -33,9 +32,9 @@ module ALU(operation, a_low, a_high, b_low, b_high, res_low, res_high,
 	// TODO: mux for flags as well
 	
 	Adder adder (a, b, res_add, overf);
-	Mux8 #(`ALU_ADD) adder_mux(res_add, operation, mux_zero, mux_add);
-	Equals eq(a, b, res_eq);
-	Mux8 #(`ALU_EQ) eq_mux({eq_zeropad, res_eq}, operation, mux_add, res);
+	Mux #(16, 8, `ALU_ADD) adder_mux(res_add, operation, mux_zero, mux_add);
+	Equals #(16, 16) eq(a, b, res_eq);
+	Mux #(16, 8, `ALU_EQ) eq_mux(res_eq, operation, mux_add, res);
 	
 	assign res_low = res[7:0];
 	assign res_high = res[15:8];

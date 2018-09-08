@@ -1,21 +1,24 @@
 `default_nettype none
 
 module Equals(a, b, res);
+	parameter integer BUS_SIZE = 16;
+	parameter integer RESULT_SIZE = 1;
 
-	input [15:0] a, b;
-	output res;
+	input [BUS_SIZE-1:0] a, b;
+	output [RESULT_SIZE-1:0] res;
 	
-	wire [16:0] result;	
+	wire [BUS_SIZE:0] result;
+	
 	assign result[0] = 1'b1;
 	
 	genvar i;
 	generate 
-		for (i=0; i<16; i = i + 1)
+		for (i=0; i<BUS_SIZE; i = i + 1)
 		begin: equals_block
 			assign result[i + 1] = result[i] & a[i] & b[i];
 		end
 	endgenerate
 	
-	assign res = result[16];
+	assign res[0] = result[BUS_SIZE];
 
 endmodule 
