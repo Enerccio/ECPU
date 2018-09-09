@@ -8,7 +8,7 @@ unsigned 16 bit number while detecting overflow on overflow pin.
 `default_nettype none
 
 module Adder(a, b, out, c_in, overflow);
-	parameter integer BUS_SIZE = 16;
+	parameter integer BUS_SIZE = 32;
 
 	input [BUS_SIZE-1:0] a, b;
 	input c_in;

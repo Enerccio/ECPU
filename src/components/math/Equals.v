@@ -1,7 +1,7 @@
 `default_nettype none
 
 module Equals(a, b, res);
-	parameter integer BUS_SIZE = 16;
+	parameter integer BUS_SIZE = 32;
 	parameter integer RESULT_SIZE = 1;
 
 	input [BUS_SIZE-1:0] a, b;
